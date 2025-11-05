@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The M0NARQ story: From Sylhet floods to production AI systems across Bangladesh.">
+    <title>Story - M0NARQ AI</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'Sweet Sans Pro';
+            src: url('assets/fonts/SweetSansPro-Light.woff2') format('woff2');
+            font-weight: 300;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Sweet Sans Pro';
+            src: url('assets/fonts/SweetSansPro-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Sweet Sans Pro';
+            src: url('assets/fonts/SweetSansPro-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Sweet Sans Pro';
+            src: url('assets/fonts/SweetSansPro-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Sweet Sans Pro';
+            src: url('assets/fonts/SweetSansPro-Heavy.woff2') format('woff2');
+            font-weight: 900;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/story.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/CustomEase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+</head>
+
+<body class="page-story">
+    
+    <div class="page-wrapper">
+        <div class="page-content">
+            
+            <div class="loader" data-loader>
+                <div class="loader-circle"></div>
+                <p class="loader-text">Loading</p>
+            </div>
+
+            <header class="header">
+                <a href="index.html" class="header-logo">M0NARQ</a>
+                
+                <nav class="header-nav">
+                    <button class="menu-button" data-menu-toggle aria-label="Open menu">
+                        <span class="menu-text">Menu</span>
+                        <div class="burger">
+                            <span class="burger-line"></span>
+                            <span class="burger-line"></span>
+                            <span class="burger-line"></span>
+                        </div>
+                    </button>
+                </nav>
+            </header>
+
+            <div class="menu-overlay" data-menu-overlay>
+                <nav>
+                    <ul class="menu-nav">
+                        <li class="menu-item"><a href="index.html" class="menu-link">Home</a></li>
+                        <li class="menu-item"><a href="work.html" class="menu-link">Work</a></li>
+                        <li class="menu-item"><a href="studio.html" class="menu-link">Studio</a></li>
+                        <li class="menu-item"><a href="story.html" class="menu-link">Story</a></li>
+                        <li class="menu-item"><a href="contact.html" class="menu-link">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <main>
+                
+                <section id="chapter-1" class="story-chapter" data-scroll-section data-pin>
+                    <div class="chapter-background">
+                        <img src="assets/images/story-01-flood-sar.webp" 
+                             alt="SAR flood map overlay"
+                             class="chapter-bg-image"
+                             loading="eager"
+                             width="1920"
+                             height="1080">
+                    </div>
+                    <div class="container">
+                        <div class="chapter-content" data-animate="fade-up">
+                            <h2 class="chapter-title">The Constraint</h2>
+                            <p class="chapter-text">
+                                One laptop, $300 in cloud credits—Sylhet was already under water. GDACS flood maps came 72 hours late. Government relief teams navigated by rumour. We had Sentinel-1 SAR tiles, an Nvidia 1660 Ti, and 96 hours to ship something that mattered.
+                            </p>
+                            <span class="tag">91% mIoU</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="chapter-2" class="story-chapter" data-scroll-section data-pin>
+                    <div class="chapter-background">
+                        <img src="assets/images/story-02-topography.webp" 
+                             alt="Digital elevation model with simulated water flow arrows"
+                             class="chapter-bg-image"
+                             loading="lazy"
+                             width="1920"
+                             height="1080">
+                    </div>
+                    <div class="container">
+                        <div class="chapter-content" data-animate="fade-up">
+                            <h2 class="chapter-title">The Physics</h2>
+                            <p class="chapter-text">
+                                Backscatter alone lies. We fused SAR coherence, NDWI from Sentinel-2, and SRTM slope into a three-layer stack—then trained a U-Net++ that respected hydrology. The model learned water doesn't climb hills. That constraint turned 78% accuracy into 91% mIoU. Physics beat pixels.
+                            </p>
+                            <span class="tag">336× faster</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="chapter-3" class="story-chapter" data-scroll-section data-pin>
+                    <div class="chapter-background">
+                        <img src="assets/images/story-03-foundation-model.webp" 
+                             alt="Satellite image grid highlighting Bangladesh tile"
+                             class="chapter-bg-image"
+                             loading="lazy"
+                             width="1920"
+                             height="1080">
+                    </div>
+                    <div class="container">
+                        <div class="chapter-content" data-animate="fade-up">
+                            <h2 class="chapter-title">The Arbitrage of Attention</h2>
+                            <p class="chapter-text">
+                                Google and Meta pre-train foundation models on ImageNet—99% of which has zero flood pixels. We pre-trained on NASA HLS + ESA SAR archives: 2M images of Brahmaputra basin morphology. When disaster struck, we fine-tuned in 6 hours, not 6 weeks. Big Tech optimises for Fortune-500 margins; we mine the 6 dB signal they overlook.
+                            </p>
+                            <span class="tag">2M images</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="chapter-4" class="story-chapter" data-scroll-section data-pin>
+                    <div class="chapter-background">
+                        <img src="assets/images/story-04-federated-edge.webp" 
+                             alt="Collage showing federated edge devices"
+                             class="chapter-bg-image"
+                             loading="lazy"
+                             width="1920"
+                             height="1080">
+                    </div>
+                    <div class="container">
+                        <div class="chapter-content" data-animate="fade-up">
+                            <h2 class="chapter-title">The Distribution Problem</h2>
+                            <p class="chapter-text">
+                                Relief vans don't have fibre. Clinics can't send patient data to AWS. Factories won't expose their shop-floor to the cloud. So we quantised models to INT8, deployed them on Raspberry Pi 4Bs, and built federated training loops that aggregate gradients without centralising sensitive data. The system improves itself—offline.
+                            </p>
+                            <span class="tag">&lt;120ms P95</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="chapter-5" class="story-chapter" data-scroll-section data-pin>
+                    <div class="chapter-background">
+                        <img src="assets/images/story-05-decision.webp" 
+                             alt="Emergency responders viewing flood polygons on tablet"
+                             class="chapter-bg-image"
+                             loading="lazy"
+                             width="1920"
+                             height="1080">
+                    </div>
+                    <div class="container">
+                        <div class="chapter-content" data-animate="fade-up">
+                            <h2 class="chapter-title">The Outcome</h2>
+                            <p class="chapter-text">
+                                Four production systems now run across geospatial, industrial, health, and public sectors. They process 2TB/day on infrastructure that costs less than a single GPU node in Oregon. Insight dies in slide decks. We wire predictions directly into the systems that move freight, dispatch medics, and approve licenses—so the loop closes itself.
+                            </p>
+                            <span class="tag">4 systems live</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="story-cta section" data-scroll-section>
+                    <div class="container">
+                        <div class="cta-content" data-animate="fade-up">
+                            <h2 class="cta-title" data-animate="title-split">
+                                <span class="title-mask">
+                                    <span class="title-line">Want to build the</span>
+                                </span>
+                                <span class="title-mask">
+                                    <span class="title-line">next one with us?</span>
+                                </span>
+                            </h2>
+                            <a href="contact.html" class="button button-accent">
+                                <span>Book a 20-min teardown</span>
+                                <svg class="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        
+                        <div class="footer-column">
+                            <h3>M0NARQ AI</h3>
+                            <p>Real-time intelligence for emerging markets. Physics-informed neural networks that ship, not slide decks.</p>
+                        </div>
+
+                        <div class="footer-column">
+                            <h3>Navigate</h3>
+                            <ul class="footer-links">
+                                <li><a href="index.html" class="footer-link">Home</a></li>
+                                <li><a href="work.html" class="footer-link">Work</a></li>
+                                <li><a href="studio.html" class="footer-link">Studio</a></li>
+                                <li><a href="story.html" class="footer-link">Story</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-column">
+                            <h3>Contact</h3>
+                            <ul class="footer-links">
+                                <li><a href="mailto:hello@m0narq.ai" class="footer-link">hello@m0narq.ai</a></li>
+                                <li><a href="contact.html" class="footer-link">Get in touch</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-column">
+                            <h3>Follow</h3>
+                            <div class="footer-social">
+                                <a href="#" class="social-link" aria-label="LinkedIn">LinkedIn</a>
+                                <a href="#" class="social-link" aria-label="Twitter">Twitter</a>
+                                <a href="#" class="social-link" aria-label="GitHub">GitHub</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="footer-bottom">
+                        <p>&copy; 2025 M0NARQ AI. All rights reserved.</p>
+                        <p>Dhaka, Bangladesh</p>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+        </div>
+    <script src="js/animations.js" defer></script>
+
+</body>
+</html>
