@@ -1,0 +1,455 @@
+/*
+══════════════════════════════════════════════════════════════════
+M0NARQ AI – ANIMATIONS (v3.0 Consolidated)
+Exo Ape aesthetic micro-interactions
+Parallax helpers, bloom effects, text reveals, grain texture
+NO magnetic cursor, NO hover tilt (as requested)
+══════════════════════════════════════════════════════════════════
+*/
+
+/* ═══════════════════════════════════════════════════════════════
+   PARALLAX OPTIMIZATION (CSS Helpers for GSAP)
+   ═══════════════════════════════════════════════════════════════ */
+[data-parallax] {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0); /* Force GPU acceleration */
+  -webkit-transform: translateZ(0);
+}
+
+/* Remove will-change after animation completes (handled by JS) */
+[data-parallax].animation-complete {
+  will-change: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   IMAGE BLOOM ON SCROLL (CSS Helpers for GSAP)
+   ═══════════════════════════════════════════════════════════════ */
+[data-bloom] {
+  transition: filter 0.3s ease-out;
+  will-change: filter;
+}
+
+/* Initial state (JS will animate from this) */
+[data-bloom].bloom-initial {
+  filter: brightness(1) saturate(1);
+}
+
+/* Bloomed state (JS will animate to this) */
+[data-bloom].bloom-active {
+  filter: brightness(1.45) saturate(1.35);
+}
+
+/* Remove will-change after scroll animation */
+[data-bloom].bloom-complete {
+  will-change: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TEXT REVEAL ANIMATIONS (GSAP Helpers)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Title split animation setup */
+[data-animate="title-split"] .title-line {
+  opacity: 0;
+  transform: translateY(100%) rotate(7deg);
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* Fade-up animation setup */
+[data-animate="fade-up"] {
+  opacity: 0;
+  transform: translateY(32px);
+  will-change: transform, opacity;
+}
+
+/* Stagger children container */
+[data-stagger-children] > * {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  will-change: transform, opacity;
+}
+
+/* Active states (applied by GSAP) */
+[data-animate].animation-active {
+  opacity: 1;
+  transform: translateY(0) rotate(0) scale(1);
+}
+
+/* Remove will-change after animation */
+[data-animate].animation-complete {
+  will-change: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRAIN TEXTURE OVERLAY (Exo Ape Signature)
+   ═══════════════════════════════════════════════════════════════ */
+.grain-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=');
+  background-repeat: repeat;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Apply grain to dark sections */
+.bg-dark,
+.hero-section,
+.story-chapter,
+.section.dark {
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SMOOTH IMAGE ZOOM (No hover, handled by scroll)
+   ═══════════════════════════════════════════════════════════════ */
+.image-wrapper img,
+.hero-background img,
+.chapter-background img {
+  transition: transform 1.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+/* Zoom state applied by GSAP on entry */
+.image-zoom-initial {
+  transform: scale(1.3);
+}
+
+.image-zoom-active {
+  transform: scale(1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MENU ANIMATION ENHANCEMENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Menu items stagger reveal (enhanced from components) */
+.menu-item {
+  transform-origin: left center;
+}
+
+/* Add subtle blur during menu animation */
+.menu-overlay.is-active {
+  animation: fadeInBlur 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes fadeInBlur {
+  0% {
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  100% {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL-TRIGGERED STATES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Section enters viewport */
+.section-in-view {
+  animation: sectionReveal 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes sectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROJECT CARD ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Smooth scale on scroll (handled by GSAP) */
+.project-card {
+  transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Video crossfade (handled by GSAP in animations.js) */
+.project-image,
+.project-video {
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER REVEAL
+   ═══════════════════════════════════════════════════════════════ */
+.footer {
+  opacity: 0;
+  transform: translateY(100px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.footer.footer-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTON ARROW ANIMATION (Subtle shift)
+   ═══════════════════════════════════════════════════════════════ */
+.button .arrow {
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Applied by GSAP on hover (handled in animations.js) */
+.button-arrow-active .arrow {
+  transform: translateX(5px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DYNAMIC ISLAND ANIMATIONS (Enhancements)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Smooth width transition (GSAP controlled) */
+.dynamic-island {
+  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 0.3s ease;
+}
+
+/* Arrow scale animation */
+.nav-arrow {
+  transition: opacity 0.3s ease, 
+              transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Progress bar smooth animation */
+.progress-bar {
+  transition: width 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Text scramble glitch effect */
+.text-content.glitching {
+  animation: textGlitch 0.3s infinite;
+}
+
+@keyframes textGlitch {
+  0%, 100% {
+    text-shadow: 
+      0.02em 0 0 rgba(44, 140, 153, 0.75),
+      -0.02em -0 0 rgba(255, 107, 53, 0.75);
+  }
+  50% {
+    text-shadow: 
+      0.02em 0.01em 0 rgba(44, 140, 153, 0.75),
+      -0.01em -0.02em 0 rgba(255, 107, 53, 0.75);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STORY CHAPTERS - GLASSMORPHISM
+   ═══════════════════════════════════════════════════════════════ */
+.chapter-content {
+  animation: glassReveal 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-play-state: paused; /* GSAP will control this */
+}
+
+@keyframes glassReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(40px);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PERFORMANCE OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Disable parallax */
+  [data-parallax] {
+    transform: none !important;
+  }
+
+  /* Disable bloom */
+  [data-bloom] {
+    filter: none !important;
+  }
+}
+
+/* Content visibility optimization (below-fold sections) */
+.section:not(:first-of-type) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+}
+
+/* Remove will-change when not animating */
+.animation-idle {
+  will-change: auto !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GSAP ANIMATION STATES (Applied by JS)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Fade states */
+.fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Slide states */
+.slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale states */
+.scale-in {
+  animation: scaleIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING STATES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Skeleton loading (if needed) */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-dark-grey) 25%,
+    var(--color-dark-grey-04) 50%,
+    var(--color-dark-grey) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+}
+
+@keyframes skeletonLoading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Pulse animation */
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STATS COUNTER ANIMATION (Helpers for GSAP)
+   ═══════════════════════════════════════════════════════════════ */
+.stat-value {
+  transition: color 0.3s ease;
+}
+
+/* Active state during counting */
+.stat-value.counting {
+  color: var(--color-accent-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SMOOTH SCROLL INDICATOR (Optional)
+   ═══════════════════════════════════════════════════════════════ */
+.scroll-indicator {
+  position: fixed;
+  bottom: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 60px;
+  background: var(--color-white-02);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-indicator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: var(--color-accent);
+  animation: scrollIndicator 2s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes scrollIndicator {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(300%); }
+}
+
+/* Show when at top of page */
+body.at-top .scroll-indicator {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CUSTOM CURSOR (Disabled as requested, but structure here if needed)
+   ═══════════════════════════════════════════════════════════════ */
+/* 
+.custom-cursor {
+  display: none; // Disabled per user request
+}
+*/
