@@ -1,0 +1,366 @@
+/*
+══════════════════════════════════════════════════════════════════
+M0NARQ AI – LAYOUT (v3.0 Consolidated)
+Container systems, grids, section spacing
+TALLER SECTIONS (120-140vh minimum heights)
+══════════════════════════════════════════════════════════════════
+*/
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE STRUCTURE
+   ═══════════════════════════════════════════════════════════════ */
+.page-wrapper {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.page-content {
+  width: 100%;
+  position: relative;
+}
+
+main {
+  /* ✅ Ensure last section doesn't hide behind Dynamic Island */
+  padding-bottom: var(--island-safe-bottom);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTAINER SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  width: 100%;
+}
+
+.container-narrow {
+  max-width: var(--container-narrow);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 var(--gutter);
+}
+
+/* Full-bleed containers (break out of padding) */
+.full-width {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION SPACING (✅ TALLER SECTIONS)
+   ═══════════════════════════════════════════════════════════════ */
+.section {
+  padding: var(--spacing-2xl) 0;
+  min-height: 120vh; /* ✅ Much taller sections */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Specific section height overrides */
+.hero-section,
+.full-bleed,
+.story-chapter {
+  min-height: 140vh; /* ✅ Extra tall for hero/story */
+  padding: var(--spacing-2xl) 0;
+}
+
+.section-sm {
+  padding: var(--spacing-lg) 0;
+  min-height: 80vh;
+}
+
+.section-lg {
+  padding: calc(var(--spacing-2xl) * 1.5) 0;
+  min-height: 150vh;
+}
+
+/* Utility spacing classes */
+.section-padding-top {
+  padding-top: var(--spacing-2xl);
+}
+
+.section-padding-bottom {
+  padding-bottom: var(--spacing-2xl);
+}
+
+.has-padding-top-and-bottom {
+  padding-top: var(--spacing-2xl);
+  padding-bottom: var(--spacing-2xl);
+}
+
+@media (max-width: 768px) {
+  .section {
+    min-height: 100vh;
+    padding: var(--spacing-xl) 0;
+  }
+
+  .hero-section,
+  .full-bleed,
+  .story-chapter {
+    min-height: 100vh;
+    padding: var(--spacing-lg) 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID SYSTEMS
+   ═══════════════════════════════════════════════════════════════ */
+.grid {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Gap variations */
+.gap-xs { gap: var(--spacing-xs); }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+
+@media (max-width: 1024px) {
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLEXBOX UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+.flex {
+  display: flex;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.gap-1 { gap: var(--spacing-xs); }
+.gap-2 { gap: var(--spacing-sm); }
+.gap-3 { gap: var(--spacing-md); }
+
+/* ═══════════════════════════════════════════════════════════════
+   IMAGE WRAPPERS (✅ FULL-WIDTH IMAGES)
+   ═══════════════════════════════════════════════════════════════ */
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ✅ Force full-width breakout */
+.image-wrapper-full,
+.hero-background,
+.chapter-background {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  position: relative;
+}
+
+.image-wrapper img,
+.hero-background img,
+.chapter-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Aspect ratio utilities */
+.aspect-16-9 { aspect-ratio: 16/9; }
+.aspect-16-10 { aspect-ratio: 16/10; }
+.aspect-4-3 { aspect-ratio: 4/3; }
+.aspect-3-4 { aspect-ratio: 3/4; }
+.aspect-square { aspect-ratio: 1/1; }
+
+/* Video wrapper */
+.video-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: #000;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   POSITIONING UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OVERFLOW UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+.overflow-hidden { overflow: hidden; }
+.overflow-visible { overflow: visible; }
+.overflow-auto { overflow: auto; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DIMENSION UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.h-screen { height: 100vh; }
+.min-h-screen { min-height: 100vh; }
+
+/* ═══════════════════════════════════════════════════════════════
+   Z-INDEX UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+.z-0 { z-index: 0; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+.z-nav { z-index: var(--z-nav); }
+.z-overlay { z-index: var(--z-overlay); }
+.z-header { z-index: var(--z-header); }
+.z-island { z-index: var(--z-island); }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE VISIBILITY
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .mobile-hidden { display: none !important; }
+}
+
+@media (min-width: 769px) {
+  .desktop-hidden { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MARGIN & PADDING UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+.m-0 { margin: 0; }
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+.p-0 { padding: 0; }
+
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
+
+.pt-1 { padding-top: var(--spacing-xs); }
+.pt-2 { padding-top: var(--spacing-sm); }
+.pt-3 { padding-top: var(--spacing-md); }
+.pt-4 { padding-top: var(--spacing-lg); }
+
+.pb-1 { padding-bottom: var(--spacing-xs); }
+.pb-2 { padding-bottom: var(--spacing-sm); }
+.pb-3 { padding-bottom: var(--spacing-md); }
+.pb-4 { padding-bottom: var(--spacing-lg); }
