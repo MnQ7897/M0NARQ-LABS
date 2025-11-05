@@ -533,6 +533,158 @@ console.log('✅ Scroll animations (pronounced parallax)');
 
 }
 
+/* ==============================================================
+   DYNAMIC ISLAND NAVIGATION
+   ============================================================== */
+class ScrambleText {
+  constructor(el){ 
+    this.el=el; 
+    this.chars="!#$%&'()*+,-./:;<=>?@[]^_`{|}~"; 
+  }
+  scramble(newText,dur=.6){
+    const old=this.el.textContent;
+    const len=Math.max(old.length,newText.length), frames=Math.round(dur*60);
+    let f=0; 
+    clearInterval(this._id);
+    this._id=setInterval(()=>{
+      f++;
+      let out="";
+      for(let i=0;i<len;i++){
+        if(i/len< f/frames){ out+=newText[i]||""; }
+        else { out+=this.chars[Math.floor(Math.random()*this.chars.length)]; }
+      }
+      this.el.textContent=out;
+      if(f>=frames) { clearInterval(this._id); this.el.textContent=newText; }
+    },1000/60);
+  }
+}
+
+class DynamicIslandNav{
+  constructor(lenisInstance=null){
+    this.lenis=lenisInstance;
+    this.sections=[...document.querySelectorAll('[data-nav-section]')]
+                    .map((sec,i)=>(sec.dataset.index=i,sec));
+    
+    if(!this.sections.length) return; // Exit if no sections found
+    
+    this.island      =document.getElementById('dynamicIsland');
+    this.textWrapper =this.island?.querySelector('.text-content');
+    this.scrambler   =new ScrambleText(this.textWrapper);
+    this.prevBtn     =document.getElementById('prevBtn');
+    this.nextBtn     =document.getElementById('nextBtn');
+    this.progressBar =document.getElementById('progressBar');
+    this.menuBtn     =document.getElementById('menuButton');
+    this.menuPanel   =document.getElementById('menuPanel');
+    this.menuItems   =[...this.menuPanel?.querySelectorAll('.menu-item')||[]];
+
+    this.state={idx:0,expanded:false,menu:false};
+
+    this.sections.forEach(sec=>{
+      if(!sec.dataset.navTitle){
+        const h=sec.querySelector('h1,h2,h3'); 
+        sec.dataset.navTitle= h? h.textContent.trim() : `Section ${sec.dataset.index}`;
+      }
+    });
+
+    this.bind(); 
+    this.observe(); 
+    this.updateUI(0,true);
+    this.updatePageMenu();
+  }
+
+  observe(){
+    this.sections.forEach(sec=>{
+      new IntersectionObserver(([e])=>{
+        e.isIntersecting&&this.updateUI(+e.target.dataset.index);
+      },{threshold:.6}).observe(sec);
+    });
+  }
+
+  bind(){
+    this.island.addEventListener('click',e=>{
+      if(e.target.closest('.nav-arrow')) return;
+      this.toggleExpand();
+    });
+    this.prevBtn.addEventListener('click',e=>{e.stopPropagation();this.go(this.state.idx-1);});
+    this.nextBtn.addEventListener('click',e=>{e.stopPropagation();this.go(this.state.idx+1);});
+    this.menuBtn.addEventListener('click',e=>{e.stopPropagation();this.toggleMenu();});
+    
+    document.addEventListener('click',e=>{
+      if(!this.island.contains(e.target)&&!this.menuBtn.contains(e.target)){
+        this.toggleExpand(false); 
+        this.toggleMenu(false);
+      }
+    });
+    
+    document.addEventListener('keydown',e=>{
+      if(e.key==='ArrowUp'||e.key==='ArrowLeft') this.go(this.state.idx-1);
+      if(e.key==='ArrowDown'||e.key==='ArrowRight') this.go(this.state.idx+1);
+      if(e.key==='Escape'){this.toggleExpand(false);this.toggleMenu(false);}
+    });
+  }
+
+  updateUI(i,init=false){
+    if(i===this.state.idx && !init) return;
+    this.state.idx=i;
+    const title=this.sections[i].dataset.navTitle.toUpperCase();
+    this.scrambler.scramble(title,.55);
+
+    this.sections.forEach(s=>s.classList.toggle('active',+s.dataset.index===i));
+    gsap.to(this.progressBar,{width:`${(i+1)/this.sections.length*100}%`,duration:.5,ease:'power2.out'});
+
+    this.menuItems.forEach(li=>{
+      const href = li.getAttribute('href');
+      const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+      li.classList.toggle('active', href === currentPage);
+    });
+  }
+
+  go(i){
+    i=Math.max(0,Math.min(this.sections.length-1,i));
+    if(i===this.state.idx) return;
+    const target=this.sections[i];
+    if(this.lenis){
+      this.lenis.scrollTo(target,{offset:0,duration:1.1,ease:(t)=>1-Math.pow(1-t,3)});
+    }else{
+      gsap.to(window,{duration:1,scrollTo:{y:target,autoKill:false},ease:'power2.inOut'});
+    }
+  }
+
+  toggleExpand(force){
+    const exp = force!==undefined?force:!this.state.expanded;
+    if(exp===this.state.expanded) return;
+    this.state.expanded=exp;
+    this.island.classList.toggle('expanded',exp);
+    gsap.to(this.island,{width:`var(--island-width-${exp?'expanded':'collapsed'})`,duration:.4,ease:'power2.out'});
+    gsap.to([this.prevBtn,this.nextBtn],{opacity:exp?1:0,scale:exp?1:.6,pointerEvents:exp?'all':'none',duration:.3,stagger:.05});
+  }
+
+  toggleMenu(force){
+    const open = force!==undefined?force:!this.state.menu;
+    if(open===this.state.menu) return;
+    this.state.menu=open;
+    this.menuBtn.classList.toggle('menu-open',open);
+    gsap.to(this.menuPanel,{opacity:open?1:0,scale:open?1:.8,pointerEvents:open?'all':'none',duration:.3,ease:'power2.out'});
+  }
+
+  updatePageMenu(){
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    this.menuItems.forEach(item=>{
+      const href = item.getAttribute('href');
+      item.classList.toggle('active', href === currentPage);
+    });
+  }
+}
+
+// Add to M0NARQ_Animations constructor (after initLenis):
+this.initDynamicIsland();
+
+// Add this method to M0NARQ_Animations class:
+initDynamicIsland(){
+  if(document.getElementById('dynamicIsland')){
+    this.dynamicIsland = new DynamicIslandNav(this.lenis);
+  }
+}
 /* ════════════════════════════════════════════════════════════
 PAGE-SPECIFIC ANIMATIONS
 ═══════════════════════════════════════════════════════════ */
