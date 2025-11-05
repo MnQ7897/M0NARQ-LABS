@@ -5,18 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="The Stack: Foundation models. Federated training. Edge inference. Physics-informed neural nets for emerging markets.">
 
-        <style>
-        /* Hide everything until animations initialize */
-        html { 
-            overflow: hidden; 
-        }
-        
-        body {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        /* Show loader immediately */
+    <!-- ✅ FIXED: Simplified loader styles - no body hiding -->
+    <style>
+        /* Loader visible immediately */
         .loader {
             position: fixed !important;
             top: 0 !important;
@@ -175,126 +166,4 @@
                                 <div class="capability-content">
                                     <h3 class="capability-title">Foundation Models</h3>
                                     <p class="capability-description">
-                                        Vision Transformers — SegFormer-B2 • Swin-v2-Base • DINO-v2 (semantic segmentation). Pre-trained on ImageNet-22k, fine-tuned on 6-band multispectral + SAR composites. Physics layers enforce energy conservation (SegFormer + LSTM-based flow models).
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="capability-card" data-animate="fade-up">
-                                <div class="capability-image-wrapper">
-                                    <img src="assets/images/services-2.webp" 
-                                         alt="Close-up of circuit board"
-                                         loading="lazy"
-                                         width="400"
-                                         height="500">
-                                </div>
-                                <div class="capability-content">
-                                    <h3 class="capability-title">Federated Training</h3>
-                                    <p class="capability-description">
-                                        On-device model updates (TensorFlow Lite, ONNX Runtime) encrypted via Paillier homomorphic schemes. Aggregates gradient contributions from 50+ edge nodes without centralising sensitive data. Deployed on Raspberry Pi 4B, Jetson Nano (4 GB), commodity Android (8 GB RAM).
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="capability-card" data-animate="fade-up">
-                                <div class="capability-image-wrapper">
-                                    <img src="assets/images/services-3.webp" 
-                                         alt="Edge device circuit with USB cables"
-                                         loading="lazy"
-                                         width="400"
-                                         height="500">
-                                </div>
-                                <div class="capability-content">
-                                    <h3 class="capability-title">Edge Inference</h3>
-                                    <p class="capability-description">
-                                        &lt;120 ms latency (P95) for 512×512 SAR segmentation on Pi 4B. Quantised INT8 models (post-training, QAT). Fallback to cloud (AWS Lambda GPU) when edge compute saturates. Offline-first: stores 7 days of predictions locally, syncs when bandwidth available.
-                                    </p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="section-cta" data-animate="fade-up">
-                            <a href="/pdf/M0NARQ-stack.pdf" class="button button-accent" download>
-                                <span>Download the 14-page tech white-paper</span>
-                                <svg class="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
-                                </svg>
-                            </a>
-                        </div>
-
-                    </div>
-                </section>
-
-                <section class="belief-section section" data-scroll-section>
-                    <div class="belief-background" data-parallax data-speed="0.3">
-                        <div class="image-wrapper">
-                            <img src="assets/images/belief-banner.webp" 
-                                 alt="Long exposure of river flowing around rocks"
-                                 loading="lazy"
-                                 width="1920"
-                                 height="1080">
-                        </div>
-                    </div>
-                    <div class="container belief-content">
-                        <blockquote class="belief-quote" data-animate="fade-up">
-                            <p>
-                                "We don't chase SOTA benchmarks. We ship systems that run on $35 hardware, tolerate 2G networks, and improve every deployment without touching production."
-                            </p>
-                        </blockquote>
-                    </div>
-                </section>
-
-            </main>
-
-            <footer class="footer">
-                <div class="container">
-                    <div class="footer-content">
-                        
-                        <div class="footer-column">
-                            <h3>M0NARQ AI</h3>
-                            <p>Real-time intelligence for emerging markets. Physics-informed neural networks that ship, not slide decks.</p>
-                        </div>
-
-                        <div class="footer-column">
-                            <h3>Navigate</h3>
-                            <ul class="footer-links">
-                                <li><a href="index.html" class="footer-link">Home</a></li>
-                                <li><a href="work.html" class="footer-link">Work</a></li>
-                                <li><a href="studio.html" class="footer-link">Studio</a></li>
-                                <li><a href="story.html" class="footer-link">Story</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="footer-column">
-                            <h3>Contact</h3>
-                            <ul class="footer-links">
-                                <li><a href="mailto:hello@m0narq.ai" class="footer-link">hello@m0narq.ai</a></li>
-                                <li><a href="contact.html" class="footer-link">Get in touch</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="footer-column">
-                            <h3>Follow</h3>
-                            <div class="footer-social">
-                                <a href="#" class="social-link" aria-label="LinkedIn">LinkedIn</a>
-                                <a href="#" class="social-link" aria-label="Twitter">Twitter</a>
-                                <a href="#" class="social-link" aria-label="GitHub">GitHub</a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="footer-bottom">
-                        <p>&copy; 2025 M0NARQ AI. All rights reserved.</p>
-                        <p>Dhaka, Bangladesh</p>
-                    </div>
-                </div>
-            </footer>
-
-        </div>
-        </div>
-    <script src="js/animations.js" defer></script>
-
-</body>
-</html>
+                                        Vision Transformers — SegFormer-B2 • Swin-v2-Base • DINO-v2 (semantic segmentation). Pre-trained on ImageNet-22k, fine
