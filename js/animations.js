@@ -1,13 +1,13 @@
 /*
 ══════════════════════════════════════════════════════════════════
 M0NARQ AI - PREMIUM ANIMATION SYSTEM
-BULLETPROOF VERSION - Preloader completely removed via JS
+PERFORMANCE OPTIMIZED - Lazy loading + Batched ScrollTriggers
 ══════════════════════════════════════════════════════════════════
 */
 
 class M0NARQ_Animations {
   constructor() {
-    // ✅ BULLETPROOF: Remove loader immediately before anything else
+    // ✅ Kill loader first
     this.killLoader();
 
     // Validate dependencies
@@ -16,31 +16,28 @@ class M0NARQ_Animations {
       return;
     }
 
-    // Performance: Debounced resize handler
-    this.resizeTimeout = null;
-    this.windowSize = {
-      width: window.innerWidth,
-      height: window.innerHeight
-    };
-
     // Init in correct order
     this.initGSAP();
     this.initLenis();
     this.initMenu();
-    this.initScrollAnimations();
+    this.initScrollAnimations(); // Now batched
     this.initHoverEffects();
     this.detectPage();
     
+    // ✅ Lazy load videos
+    this.lazyVideos();
+    
     // Start animations immediately
     this.animatePageEntry();
+    
+    // ✅ Conditional mix-blend-mode for header
+    this.initHeaderBlend();
     
     // Performance: RAF-based throttled resize
     let ticking = false;
     window.addEventListener('resize', () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          this.windowSize.width = window.innerWidth;
-          this.windowSize.height = window.innerHeight;
           ScrollTrigger.refresh();
           ticking = false;
         });
@@ -54,17 +51,14 @@ class M0NARQ_Animations {
   // ═══════════════════════════════════════════════════════════════
   killLoader() {
     const loaders = document.querySelectorAll('.loader, [data-loader]');
-    loaders.forEach(loader => {
-      loader.remove(); // Instant removal from DOM
-    });
+    loaders.forEach(loader => loader.remove());
     
-    // Ensure body is visible
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
     document.body.style.opacity = '1';
     document.body.style.visibility = 'visible';
     
-    console.log('✅ Loader nuked from DOM');
+    console.log('✅ Loader nuked');
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -73,11 +67,9 @@ class M0NARQ_Animations {
   initGSAP() {
     gsap.registerPlugin(ScrollTrigger, CustomEase);
 
-    // ✅ Exo Ape custom easing curves
     CustomEase.create("customGentle", "M0,0 C0,0.202 0.204,1 1,1");
     CustomEase.create("customStrong", "M0,0 C0.496,0.004 0,1 1,1");
 
-    // Defaults
     gsap.defaults({
       ease: "power2.out",
       duration: 0.6
@@ -87,11 +79,11 @@ class M0NARQ_Animations {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 2. LENIS SMOOTH SCROLL
+  // 2. LENIS SMOOTH SCROLL (✅ OPTIMIZED DURATION)
   // ═══════════════════════════════════════════════════════════════
   initLenis() {
     this.lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.7,  // ✅ Changed from 1.2 → 0.7 for snappier feel
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       direction: 'vertical',
       gestureDirection: 'vertical',
@@ -100,7 +92,6 @@ class M0NARQ_Animations {
       touchMultiplier: 2,
     });
 
-    // Sync with GSAP
     this.lenis.on('scroll', ScrollTrigger.update);
 
     const lenisRAF = (time) => {
@@ -109,11 +100,64 @@ class M0NARQ_Animations {
     };
     
     requestAnimationFrame(lenisRAF);
-    console.log('✅ Lenis smooth scroll initialized');
+    console.log('✅ Lenis (0.7s duration)');
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 3. PAGE ENTRY - ✅ EXO APE PATTERN
+  // ✅ LAZY VIDEO LOADING (New)
+  // ═══════════════════════════════════════════════════════════════
+  lazyVideos() {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const vid = entry.target;
+            if (!vid.dataset._hydrated) {
+              vid.load();
+              vid.dataset._hydrated = '1';
+              console.log('📹 Video loaded:', vid.src);
+            }
+            observer.unobserve(vid);
+          }
+        });
+      },
+      { rootMargin: '200px' }
+    );
+
+    document.querySelectorAll('.project-video').forEach(v => {
+      v.setAttribute('preload', 'none'); // Force lazy
+      observer.observe(v);
+    });
+
+    console.log('✅ Lazy video observer active');
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // ✅ CONDITIONAL HEADER BLEND MODE (New)
+  // ═══════════════════════════════════════════════════════════════
+  initHeaderBlend() {
+    const header = document.querySelector('.header');
+    const hero = document.querySelector('.hero-section, .project-hero, .page-hero');
+    
+    if (!header || !hero) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          document.body.classList.add('is-at-hero');
+        } else {
+          document.body.classList.remove('is-at-hero');
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(hero);
+    console.log('✅ Header blend observer active');
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // 3. PAGE ENTRY
   // ═══════════════════════════════════════════════════════════════
   animatePageEntry() {
     const heroTitle = document.querySelector('.hero-title, .project-title-main');
@@ -123,7 +167,6 @@ class M0NARQ_Animations {
 
     const tl = gsap.timeline();
 
-    // ✅ Title lines - Exo Ape pattern
     if (titleLines && titleLines.length > 0) {
       gsap.set(titleLines, {
         autoAlpha: 0,
@@ -138,13 +181,15 @@ class M0NARQ_Animations {
         stagger: 0.12,
         duration: 1,
         ease: "customGentle",
-        clearProps: "all"
+        onStart: () => {
+          gsap.set(titleLines, { willChange: 'transform' });
+        },
+        onComplete: () => {
+          gsap.set(titleLines, { clearProps: 'willChange' });
+        }
       }, 0.2);
-      
-      console.log(`✨ Animating ${titleLines.length} title lines`);
     }
 
-    // ✅ Hero image zoom
     if (heroImage) {
       gsap.set(heroImage, {
         scale: 1.3,
@@ -157,11 +202,8 @@ class M0NARQ_Animations {
         ease: "power2.out",
         clearProps: "scale"
       }, 0);
-      
-      console.log('✨ Hero image zoom animation');
     }
 
-    // ✅ Metadata fade
     if (heroMeta.length > 0) {
       gsap.set(heroMeta, { autoAlpha: 0, y: 20 });
 
@@ -172,26 +214,11 @@ class M0NARQ_Animations {
         duration: 0.8,
         ease: "power2.out"
       }, 0.6);
-      
-      console.log(`✨ Fading in ${heroMeta.length} metadata elements`);
     }
-
-    // Performance: Set will-change only during animation
-    gsap.set('[data-animate], .project-card, .title-line', {
-      willChange: 'transform'
-    });
-    
-    // Clear will-change after animations complete
-    setTimeout(() => {
-      gsap.set('[data-animate], .project-card, .title-line', {
-        clearProps: 'willChange'
-      });
-      console.log('🧹 Cleared will-change for performance');
-    }, 2000);
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 4. MENU - ✅ CIRCULAR REVEAL (EXO APE)
+  // 4. MENU
   // ═══════════════════════════════════════════════════════════════
   initMenu() {
     const menuButton = document.querySelector('.menu-button');
@@ -212,7 +239,6 @@ class M0NARQ_Animations {
       isMenuOpen ? this.openMenu(menuOverlay, burger, burgerLines, menuItems) : this.closeMenu(menuOverlay, burger, burgerLines, menuItems);
     });
 
-    // Close on link click
     menuItems.forEach(item => {
       item.addEventListener('click', () => {
         if (isMenuOpen) {
@@ -228,7 +254,6 @@ class M0NARQ_Animations {
   openMenu(overlay, burger, lines, items) {
     if (this.lenis) this.lenis.stop();
 
-    // ✅ Circular reveal from top-right
     gsap.fromTo(overlay,
       { clipPath: "circle(0% at 100% 0%)" },
       {
@@ -241,13 +266,11 @@ class M0NARQ_Animations {
     overlay.classList.add('is-active');
     burger.classList.add('is-active');
 
-    // ✅ Burger → X
     const [top, middle, bottom] = lines;
     gsap.to(top, { y: 8, rotation: 45, transformOrigin: "center", duration: 0.3, ease: "power2.inOut" });
     gsap.to(middle, { autoAlpha: 0, duration: 0.1 });
     gsap.to(bottom, { y: -8, rotation: -45, transformOrigin: "center", duration: 0.3, ease: "power2.inOut" });
 
-    // ✅ Menu items stagger
     gsap.fromTo(items,
       { autoAlpha: 0, y: 30, rotation: -5 },
       {
@@ -282,72 +305,74 @@ class M0NARQ_Animations {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 5. SCROLL ANIMATIONS - ✅ ALL EXO APE PATTERNS
+  // 5. SCROLL ANIMATIONS (✅ BATCHED)
   // ═══════════════════════════════════════════════════════════════
   initScrollAnimations() {
     
-    // ✅ TITLE ANIMATIONS
-    gsap.utils.toArray('[data-animate="title"], [data-animate="title-split"]').forEach(element => {
-      const lines = element.querySelectorAll('.title-line');
-
-      if (lines.length > 0) {
-        gsap.fromTo(lines,
-          { autoAlpha: 0, rotation: 7, yPercent: 100 },
-          {
-            autoAlpha: 1,
-            rotation: 0,
-            yPercent: 0,
-            stagger: 0.1,
-            duration: 1,
-            ease: "customGentle",
-            scrollTrigger: {
-              trigger: element,
-              start: "top 80%",
-              toggleActions: "play none none reverse"
-            }
+    // ✅ BATCHED TITLE ANIMATIONS
+    ScrollTrigger.batch('[data-animate="title"], [data-animate="title-split"]', {
+      start: 'top 80%',
+      onEnter: batch => {
+        batch.forEach(element => {
+          const lines = element.querySelectorAll('.title-line');
+          if (lines.length > 0) {
+            gsap.fromTo(lines,
+              { autoAlpha: 0, rotation: 7, yPercent: 100 },
+              {
+                autoAlpha: 1,
+                rotation: 0,
+                yPercent: 0,
+                stagger: 0.1,
+                duration: 1,
+                ease: "customGentle",
+                onStart: () => gsap.set(lines, { willChange: 'transform' }),
+                onComplete: () => gsap.set(lines, { clearProps: 'willChange' })
+              }
+            );
           }
-        );
+        });
       }
     });
 
-    // ✅ FADE-UP
-    gsap.utils.toArray('[data-animate="fade-up"]').forEach(el => {
-      gsap.fromTo(el,
-        { autoAlpha: 0, y: 30 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 85%" }
-        }
-      );
+    // ✅ BATCHED FADE-UP
+    ScrollTrigger.batch('[data-animate="fade-up"]', {
+      start: 'top 85%',
+      onEnter: batch => gsap.to(batch, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: { each: 0.08 }
+      })
     });
 
-    // ✅ STAGGER CHILDREN
-    gsap.utils.toArray('[data-stagger-children]').forEach(parent => {
-      const children = parent.querySelectorAll('[data-animate]');
+    // Set initial state for fade-ups
+    gsap.set('[data-animate="fade-up"]', { autoAlpha: 0, y: 30 });
 
-      if (children.length > 0) {
-        gsap.fromTo(children,
-          { autoAlpha: 0, y: 30, scale: 0.95 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            stagger: { amount: 0.8, from: "start" },
-            duration: 0.8,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: parent,
-              start: "top 70%"
-            }
+    // ✅ BATCHED STAGGER CHILDREN
+    ScrollTrigger.batch('[data-stagger-children]', {
+      start: 'top 70%',
+      onEnter: batch => {
+        batch.forEach(parent => {
+          const children = parent.querySelectorAll('[data-animate]');
+          if (children.length > 0) {
+            gsap.fromTo(children,
+              { autoAlpha: 0, y: 30, scale: 0.95 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                scale: 1,
+                stagger: { amount: 0.8, from: "start" },
+                duration: 0.8,
+                ease: "power2.out"
+              }
+            );
           }
-        );
+        });
       }
     });
 
-    // ✅ PARALLAX (optimized with transform3d)
+    // ✅ PARALLAX (kept individual - needs scrub)
     gsap.utils.toArray('[data-parallax]').forEach(el => {
       const speed = parseFloat(el.dataset.speed) || 0.5;
 
@@ -363,23 +388,20 @@ class M0NARQ_Animations {
       });
     });
 
-    // ✅ PROJECT CARDS
-    gsap.utils.toArray('.project-card').forEach(card => {
-      gsap.fromTo(card,
-        { autoAlpha: 0, y: 80, scale: 0.95 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%"
-          }
-        }
-      );
+    // ✅ BATCHED PROJECT CARDS
+    ScrollTrigger.batch('.project-card', {
+      start: 'top 80%',
+      onEnter: batch => gsap.to(batch, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: 'power2.out',
+        stagger: { each: 0.15 }
+      })
     });
+
+    gsap.set('.project-card', { autoAlpha: 0, y: 80, scale: 0.95 });
 
     // ✅ FOOTER
     const footer = document.querySelector('.footer');
@@ -396,23 +418,21 @@ class M0NARQ_Animations {
       );
     }
     
-    console.log('✅ Scroll animations initialized');
+    console.log('✅ Scroll animations (batched)');
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 6. HOVER EFFECTS
+  // 6. HOVER EFFECTS (✅ NO EAGER VIDEO LOAD)
   // ═══════════════════════════════════════════════════════════════
   initHoverEffects() {
     
-    // ✅ PROJECT CARDS - Video crossfade with error handling
     document.querySelectorAll('.project-card').forEach(card => {
       const image = card.querySelector('.project-image');
       const video = card.querySelector('.project-video');
 
       if (!video) return;
 
-      // Preload video metadata
-      video.load();
+      // ✅ Removed video.load() - now handled by lazyVideos()
 
       card.addEventListener('mouseenter', () => {
         gsap.to(card, { scale: 1.02, duration: 0.4, ease: "power2.out" });
@@ -460,7 +480,7 @@ class M0NARQ_Animations {
       });
     });
     
-    console.log('✅ Hover effects initialized');
+    console.log('✅ Hover effects (lazy video load)');
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -476,7 +496,6 @@ class M0NARQ_Animations {
   }
 
   initHomepage() {
-    // Stats counter animation
     const stats = document.querySelectorAll('.stat-value');
     stats.forEach(stat => {
       const text = stat.textContent.trim();
@@ -497,21 +516,10 @@ class M0NARQ_Animations {
     });
   }
 
-  initStudioPage() {
-    // No additional animations needed
-  }
+  initStudioPage() {}
+  initStoryPage() {}
+  initProjectPage() {}
 
-  initStoryPage() {
-    // Story chapters already handled by scroll triggers
-  }
-
-  initProjectPage() {
-    // Project specific animations already handled
-  }
-
-  // ═══════════════════════════════════════════════════════════════
-  // 8. UTILITIES
-  // ═══════════════════════════════════════════════════════════════
   refresh() {
     ScrollTrigger.refresh();
   }
@@ -520,19 +528,16 @@ class M0NARQ_Animations {
     ScrollTrigger.getAll().forEach(st => st.kill());
     gsap.globalTimeline.clear();
     if (this.lenis) this.lenis.destroy();
-    console.log('🧹 Animations destroyed');
   }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// INITIALIZE - ✅ BULLETPROOF
+// INITIALIZE
 // ═══════════════════════════════════════════════════════════════
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎬 DOM ready - initializing animations');
     window.m0narqAnimations = new M0NARQ_Animations();
   });
 } else {
-  console.log('🎬 DOM already loaded - initializing animations');
   window.m0narqAnimations = new M0NARQ_Animations();
 }
